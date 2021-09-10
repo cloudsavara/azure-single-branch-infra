@@ -7,7 +7,7 @@ mv vault /usr/bin
 mkdir /etc/vault
 useradd -r vault
 chown -R vault:vault /opt/vault
-HOST=`curl http://169.254.169.254/latest/meta-data/public-ipv4`
+HOST=`curl ifconfig.me`
 IP4=`hostname -i`
 #Consul installation
 yum install -y yum-utils
@@ -118,7 +118,7 @@ LimitMEMLOCK=infinity
 WantedBy=multi-user.target" > /etc/systemd/system/vault.service
 sudo systemctl enable vault.service
 nohup vault server -config=/etc/vault/config.hcl &
-sleep 10
+sleep 20
 export VAULT_ADDR=http://$HOST:8200
 vault operator init -key-shares=3 -key-threshold=2 > unsealkeys.txt
 sleep 5
