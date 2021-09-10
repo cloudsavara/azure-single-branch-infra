@@ -24,18 +24,22 @@ pipeline {
                     sh "export VAULT_ADDR=http://${host}:8200"
                     sh 'export VAULT_SKIP_VERIFY=true'
                     sh "curl --header 'X-Vault-Token: ${VAULT_TOKEN}' --request GET http://${host}:8200/v1/MY_CREDS/data/secret > mycreds.json"
-                    sh 'cat mycreds.json | jq -r .data.data.aws_access_key_id > awskeyid.txt'
-                    sh 'cat mycreds.json | jq -r .data.data.aws_secret_access_key > awssecret.txt'
+                    sh 'cat mycreds.json | jq -r .data.data.ARM_CLIENT_ID > ARM_CLIENT_ID.txt'
+                    sh 'cat mycreds.json | jq -r .data.data.ARM_CLIENT_SECRET > ARM_CLIENT_SECRET.txt'
+                    sh 'cat mycreds.json | jq -r .data.data.ARM_SUBSCRIPTION_ID > ARM_SUBSCRIPTION_ID.txt'
+                    sh 'cat mycreds.json | jq -r .data.data.ARM_TENANT_ID > ARM_TENANT_ID.txt'
                     sh 'cat mycreds.json | jq -r .data.data.sonar_token > sonar_token.txt'
-                    AWS_ACCESS_KEY_ID = readFile('awskeyid.txt').trim()
-                    AWS_SECRET_ACCESS_KEY = readFile('awssecret.txt').trim()
-                    SONAR_TOKEN = readFile('sonar_token.txt').trim()            
+                    ARM_CLIENT_ID = readFile('ARM_CLIENT_ID.txt').trim()
+                    ARM_CLIENT_SECRET = readFile('ARM_CLIENT_SECRET.txt').trim()
+                    ARM_SUBSCRIPTION_ID = readFile('ARM_SUBSCRIPTION_ID.txt').trim()
+                    ARM_CLIENT_SECRET = readFile('ARM_CLIENT_SECRET.txt').trim()
+                    ARM_TENANT_ID = readFile('ARM_TENANT_ID.txt').trim()            
                 }
             }
         }
         stage('clone repo') {
             steps {
-                git url:"https://github.com/${params.git_user}/eks-demo-project.git", branch:'main'
+                git url:"https://github.com/${params.git_user}/azure-single-branch-infra.git", branch:'main'
             }
         }
         stage('Prepare the setup') {
@@ -64,15 +68,16 @@ pipeline {
                     sh 'sudo chmod +x ./aws-iam-authenticator'
                     sh 'sudo mv aws-iam-authenticator /usr/bin'
                     sh "rm -rf terraform_${TF_VERSION}_linux_amd64.zip"
-                    echo "Copying AWS cred to ${HOME} directory"
-                    sh "mkdir -p $HOME/.aws"
+                    echo "Copying Azure cred to ${HOME} directory"
+                    sh "mkdir -p $HOME/.azure"
                     sh """
                     set +x
-                    cat <<-EOF | tee $HOME/.aws/credentials
+                    cat <<-EOF | tee $HOME/.azure/config
 [default]
-aws_access_key_id=${AWS_ACCESS_KEY_ID}
-aws_secret_access_key=${AWS_SECRET_ACCESS_KEY}"""
-                    
+ARM_CLIENT_ID=${ARM_CLIENT_ID}
+ARM_CLIENT_SECRET=${ARM_CLIENT_SECRET}
+ARM_SUBSCRIPTION_ID=${ARM_SUBSCRIPTION_ID}
+ARM_TENANT_ID=${ARM_TENANT_ID}"""                    
                 }
                 sh 'terraform version'
                 sh 'aws-iam-authenticator help'
@@ -104,9 +109,9 @@ aws_secret_access_key=${AWS_SECRET_ACCESS_KEY}"""
                     sh 'terraform output -raw kubeconfig > $HOME/.kube/config'
                     sh 'sudo chown $(id -u):$(id -g) $HOME/.kube/config'
                     sh 'sudo mkdir -p /root/.kube'
-                    sh 'sudo mkdir -p /root/.aws'
+                    sh 'sudo mkdir -p /root/.azure'
                     sh 'sudo cp $HOME/.kube/config /root/.kube'
-                    sh 'sudo cp $HOME/.aws/credentials /root/.aws'
+                    sh 'sudo cp $HOME/.azure/config /root/.azure'
                     sleep 30
                     sh 'kubectl get nodes'
                 }
@@ -131,7 +136,7 @@ aws_secret_access_key=${AWS_SECRET_ACCESS_KEY}"""
             steps {
                 script {
                     dir('python-jinja2-login'){
-                        def host=sh(script: 'curl http://169.254.169.254/latest/meta-data/public-ipv4', returnStdout: true)
+                        def host=sh(script: 'curl ifconfig.me', returnStdout: true)
                         echo "$host"
                         git url:"https://github.com/${params.git_user}/python-jinja2-login.git", branch:'master'
                         sh "/opt/sonarscanner/bin/sonar-scanner \
@@ -151,7 +156,7 @@ aws_secret_access_key=${AWS_SECRET_ACCESS_KEY}"""
                 script{
                     dir('python-jinja2-login'){
                         echo "Building docker image"
-                        dockerImage = docker.build("${USER_CREDENTIALS_USR}/eks-demo-lab:${env.BUILD_ID}")
+                        dockerImage = docker.build("${USER_CREDENTIALS_USR}/azure-single-branch-infra:${env.BUILD_ID}")
                         echo "Pushing the image to registry"
                         docker.withRegistry( 'https://registry.hub.docker.com', registryCredential ) {
                             dockerImage.push("latest")
