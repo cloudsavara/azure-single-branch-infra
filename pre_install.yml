@@ -58,15 +58,6 @@
       loop:
         - unzip /opt/sonar-scanner-cli-4.6.0.2311-linux.zip -d /opt
         - mv /opt/sonar-scanner-4.6.0.2311-linux /opt/sonarscanner
-    - name: Download AWS CLI
-      get_url:
-        url: https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip
-        dest: /home/centos
-    - name: Move AWS CLI binary
-      command: '{{ item }}'
-      loop:
-        - unzip /home/centos/awscli-exe-linux-x86_64.zip -d /home/centos
-        - sh /home/centos/aws/install --bin-dir /usr/bin
     - name: Download jq binary
       get_url:
         url: https://github.com/stedolan/jq/releases/download/jq-1.6/jq-linux64
