@@ -19,7 +19,7 @@ pipeline {
             when { expression { params.action == 'create' } }
             steps {
                 script {
-                    def host=sh(script: 'curl http://169.254.169.254/latest/meta-data/public-ipv4', returnStdout: true)
+                    def host=sh(script: 'curl ifconfig.me', returnStdout: true)
                     echo "$host"
                     sh "export VAULT_ADDR=http://${host}:8200"
                     sh 'export VAULT_SKIP_VERIFY=true'
