@@ -79,14 +79,7 @@ ARM_TENANT_ID=${ARM_TENANT_ID}"""
                 sh 'kubectl version --short --client'
 
             }
-        }
-        stage('az login'){
-            steps {
-                script {
-                    sh "az login --service-principal -u ${ARM_CLIENT_ID} -p ${ARM_CLIENT_SECRET} --tenant ${ARM_TENANT_ID}"
-                }
-            }
-        }  
+        } 
         stage ('Run Terraform Plan') {
             when { expression { params.action == 'create' } }
             steps {
