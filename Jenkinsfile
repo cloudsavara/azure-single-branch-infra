@@ -90,7 +90,7 @@ ARM_TENANT_ID=${ARM_TENANT_ID}"""
             steps {
                 script {
                     sh 'terraform init'
-                    sh "terraform plan -var cluster-name=${params.cluster_name} -out ${plan}"
+                    sh "terraform plan -var cluster-name=${params.cluster_name} -var client_id=${ARM_CLIENT_ID} -var client_secret=${ARM_CLIENT_SECRET} -out ${plan}"
                 }
             }
         }
