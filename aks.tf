@@ -32,8 +32,4 @@ default_node_pool {
     vm_size    = Standard_DS2_v2
 	vnet_subnet_id = "${azurerm_subnet.subnet.id}"
   }
-service_principal {
-    client_id     = var.client_id
-    client_secret = var.client_secret
-  }
 }
