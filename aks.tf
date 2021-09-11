@@ -22,7 +22,7 @@ resource "azurerm_subnet" "subnet" {
 }
 
 resource "azurerm_kubernetes_cluster" "k8s" {
-  name                = var.clustername
+  name                = var.cluster-name
   location            = data.azurerm_resource_group.myterraformgroup.location
   resource_group_name = data.azurerm_resource_group.myterraformgroup.name
   dns_prefix          = "tf-aks"
