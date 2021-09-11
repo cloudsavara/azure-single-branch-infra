@@ -73,7 +73,7 @@ pipeline {
                     sh """
                     set +x
                     cat <<-EOF | tee $HOME/.azure/config
-[default]
+[cloud]
 ARM_CLIENT_ID=${ARM_CLIENT_ID}
 ARM_CLIENT_SECRET=${ARM_CLIENT_SECRET}
 ARM_SUBSCRIPTION_ID=${ARM_SUBSCRIPTION_ID}
