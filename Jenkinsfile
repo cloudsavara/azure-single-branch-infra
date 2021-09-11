@@ -80,6 +80,13 @@ ARM_TENANT_ID=${ARM_TENANT_ID}"""
 
             }
         }
+        stage('az login'){
+            steps {
+                script {
+                    sh "az login --service-principal -u ${ARM_CLIENT_ID} -p ${ARM_CLIENT_SECRET} --tenant ${ARM_TENANT_ID}"
+                }
+            }
+        }  
         stage ('Run Terraform Plan') {
             when { expression { params.action == 'create' } }
             steps {
@@ -88,14 +95,7 @@ ARM_TENANT_ID=${ARM_TENANT_ID}"""
                     sh "terraform plan -var cluster-name=${params.cluster_name} -var client_id=${ARM_CLIENT_ID} -var client_secret=${ARM_CLIENT_SECRET} -out ${plan}"
                 }
             }
-        }
-        stage('az login'){
-            steps {
-                script {
-                    sh "az login --service-principal -u ${ARM_CLIENT_ID} -p ${ARM_CLIENT_SECRET} --tenant ${ARM_TENANT_ID}"
-                }
-            }
-        }        
+        }      
         stage ('Deploy Terraform Plan ==> apply') {
             when { expression { params.action == 'create' } }
             steps {
