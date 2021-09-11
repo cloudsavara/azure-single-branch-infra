@@ -99,7 +99,7 @@ ARM_TENANT_ID=${ARM_TENANT_ID}"""
                         sh 'mkdir -p $HOME/.kube'
                     }
                     echo 'Running Terraform apply'
-                    sh "terraform apply -var client_id=${ARM_CLIENT_ID} -var client_secret=${ARM_CLIENT_SECRET} -var subscription_id=${ARM_SUBSCRIPTION_ID} -var tenant_id=${ARM_TENANT_ID}"
+                    sh "terraform apply -var client_id=${ARM_CLIENT_ID} -var client_secret=${ARM_CLIENT_SECRET} -var subscription_id=${ARM_SUBSCRIPTION_ID} -var tenant_id=${ARM_TENANT_ID} --auto-approve"
                     sh 'terraform output -raw kubeconfig > $HOME/.kube/config'
                     sh 'sudo chown $(id -u):$(id -g) $HOME/.kube/config'
                     sh 'sudo mkdir -p /root/.kube'
@@ -173,7 +173,7 @@ ARM_TENANT_ID=${ARM_TENANT_ID}"""
                         sh 'kubectl delete ns prometheus || true'
                         sh 'ansible-playbook python-app.yml --user jenkins -e action=absent -e config=$HOME/.kube/config || true'
                     }
-                        sh "terraform destroy -var client_id=${ARM_CLIENT_ID} -var client_secret=${ARM_CLIENT_SECRET} -var subscription_id=${ARM_SUBSCRIPTION_ID} -var tenant_id=${ARM_TENANT_ID}"
+                        sh "terraform destroy -var client_id=${ARM_CLIENT_ID} -var client_secret=${ARM_CLIENT_SECRET} -var subscription_id=${ARM_SUBSCRIPTION_ID} -var tenant_id=${ARM_TENANT_ID} --auto-approve"
                     
                 }
             }
