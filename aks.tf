@@ -18,7 +18,7 @@ resource "azurerm_subnet" "subnet" {
   name                 = "aksnodes"
   resource_group_name  = data.azurerm_resource_group.myterraformgroup.name
   address_prefixes       = ["10.1.0.0/24"]
-  virtual_network_name = "${azurerm_virtual_network.vnet.name}"
+  virtual_network_name = azurerm_virtual_network.vnet.name
 }
 
 resource "azurerm_kubernetes_cluster" "k8s" {
@@ -36,4 +36,17 @@ service_principal {
     client_id     = var.client_id
     client_secret = var.client_secret
   }
+role_based_access_control {
+        enabled = true
+    }
+}
+
+data "azuread_service_principal" "akssp" {
+  application_id = var.client_id
+}
+
+resource "azurerm_role_assignment" "netcontribrole" {
+  scope                = azurerm_subnet.subnet.id
+  role_definition_name = "Network Contributor"
+  principal_id         = data.azuread_service_principal.akssp.object_id
 }
