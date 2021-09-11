@@ -80,6 +80,6 @@
         - sysctl -p
         - sysctl -w fs.file-max=65536
         - docker-compose -f /home/azureuser/docker-compose.yml up -d
-        - sleep 5
+        - sleep 10
         - chmod -R 777 /data
         - pip3 install openshift
