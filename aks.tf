@@ -45,10 +45,6 @@ role_based_access_control {
     }
 }
 
-data "azuread_service_principal" "akssp" {
-  application_id = var.client_id
-}
-
 resource "azurerm_role_assignment" "netcontribrole" {
   scope                = azurerm_subnet.subnet.id
   role_definition_name = "Network Contributor"
