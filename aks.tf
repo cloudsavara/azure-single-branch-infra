@@ -17,19 +17,19 @@ resource "azurerm_virtual_network" "vnet" {
 resource "azurerm_subnet" "subnet" {
   name                 = "aksnodes"
   resource_group_name  = data.azurerm_resource_group.myterraformgroup.name
-  address_prefix       = "10.1.0.0/24"
+  address_prefixes       = ["10.1.0.0/24"]
   virtual_network_name = "${azurerm_virtual_network.vnet.name}"
 }
 
 resource "azurerm_kubernetes_cluster" "k8s" {
   name                = var.clustername
-  location            = azurerm_resource_group.k8s.location
-  resource_group_name = azurerm_resource_group.k8s.name
-  dns_prefix          = tf-aks
+  location            = data.azurerm_resource_group.myterraformgroup.location
+  resource_group_name = data.azurerm_resource_group.myterraformgroup.name
+  dns_prefix          = "tf-aks"
 default_node_pool {
     name       = "default"
     node_count = 1
-    vm_size    = Standard_DS2_v2
-	vnet_subnet_id = "${azurerm_subnet.subnet.id}"
+    vm_size    = "Standard_DS2_v2"
+    vnet_subnet_id = "${azurerm_subnet.subnet.id}"
   }
 }
