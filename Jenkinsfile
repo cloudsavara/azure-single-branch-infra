@@ -1,6 +1,6 @@
 pipeline {
     parameters {
-        choice(name: 'action', choices: 'create\ndestroy', description: 'Action to create AWS EKS cluster')
+        choice(name: 'action', choices: 'create\ndestroy', description: 'Action to create AKS EKS cluster')
         string(name: 'cluster_name', defaultValue: 'demo', description: 'EKS cluster name')
         string(name: 'terraform_version', defaultValue: '0.14.6', description: 'Terraform version')
         string(name: 'git_user', defaultValue: 'kodekolli', description: 'Enter github username')
@@ -15,7 +15,7 @@ pipeline {
     }
 
     stages {
-        stage('Retrieve AWS creds and Docker creds from vault'){
+        stage('Retrieve AKS creds and Docker creds from vault'){
             when { expression { params.action == 'create' } }
             steps {
                 script {
@@ -60,13 +60,9 @@ pipeline {
                     sh "wget https://releases.hashicorp.com/terraform/${TF_VERSION}/terraform_${TF_VERSION}_linux_amd64.zip"
                     sh "unzip terraform_${TF_VERSION}_linux_amd64.zip"
                     sh 'sudo mv terraform /usr/bin'
-                    echo 'Installing AWS OAM Authenticator'
-                    sh "curl -o aws-iam-authenticator https://amazon-eks.s3.us-west-2.amazonaws.com/1.18.9/2020-11-02/bin/linux/amd64/aws-iam-authenticator"
                     sh "curl -o kubectl https://amazon-eks.s3.us-west-2.amazonaws.com/1.18.9/2020-11-02/bin/linux/amd64/kubectl"
                     sh 'chmod +x ./kubectl'
                     sh 'sudo mv kubectl /usr/bin'
-                    sh 'sudo chmod +x ./aws-iam-authenticator'
-                    sh 'sudo mv aws-iam-authenticator /usr/bin'
                     sh "rm -rf terraform_${TF_VERSION}_linux_amd64.zip"
                     echo "Copying Azure cred to ${HOME} directory"
                     sh "mkdir -p $HOME/.azure"
@@ -80,7 +76,6 @@ ARM_SUBSCRIPTION_ID=${ARM_SUBSCRIPTION_ID}
 ARM_TENANT_ID=${ARM_TENANT_ID}"""                    
                 }
                 sh 'terraform version'
-                sh 'aws-iam-authenticator help'
                 sh 'kubectl version --short --client'
 
             }
