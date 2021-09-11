@@ -33,7 +33,8 @@ pipeline {
                     ARM_CLIENT_SECRET = readFile('ARM_CLIENT_SECRET.txt').trim()
                     ARM_SUBSCRIPTION_ID = readFile('ARM_SUBSCRIPTION_ID.txt').trim()
                     ARM_CLIENT_SECRET = readFile('ARM_CLIENT_SECRET.txt').trim()
-                    ARM_TENANT_ID = readFile('ARM_TENANT_ID.txt').trim()            
+                    ARM_TENANT_ID = readFile('ARM_TENANT_ID.txt').trim()
+                    SONAR_TOKEN = readFile('sonar_token.txt').trim()
                 }
             }
         }
