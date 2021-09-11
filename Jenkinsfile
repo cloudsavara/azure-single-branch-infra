@@ -16,7 +16,6 @@ pipeline {
 
     stages {
         stage('Retrieve AKS creds and Docker creds from vault'){
-            when { expression { params.action == 'create' } }
             steps {
                 script {
                     def host=sh(script: 'curl ifconfig.me', returnStdout: true)
