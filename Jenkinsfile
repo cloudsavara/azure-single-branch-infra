@@ -100,7 +100,7 @@ ARM_TENANT_ID=${ARM_TENANT_ID}"""
                     }
                     echo 'Running Terraform apply'
                     sh "terraform apply -var client_id=${ARM_CLIENT_ID} -var client_secret=${ARM_CLIENT_SECRET} -var subscription_id=${ARM_SUBSCRIPTION_ID} -var tenant_id=${ARM_TENANT_ID} --auto-approve"
-                    sh 'terraform output -raw kubeconfig > $HOME/.kube/config'
+                    sh 'terraform output -raw kube_config > $HOME/.kube/config'
                     sh 'sudo chown $(id -u):$(id -g) $HOME/.kube/config'
                     sh 'sudo mkdir -p /root/.kube'
                     sh 'sudo mkdir -p /root/.azure'
