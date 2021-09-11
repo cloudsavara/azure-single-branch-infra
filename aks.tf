@@ -45,8 +45,3 @@ role_based_access_control {
     }
 }
 
-resource "azurerm_role_assignment" "netcontribrole" {
-  scope                = azurerm_subnet.subnet.id
-  role_definition_name = "Network Contributor"
-  principal_id         = data.azuread_service_principal.akssp.object_id
-}
