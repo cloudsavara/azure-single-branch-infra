@@ -89,7 +89,13 @@ ARM_TENANT_ID=${ARM_TENANT_ID}"""
                 }
             }
         }
-        
+        stage('az login'){
+            steps {
+                script {
+                    sh "az login --service-principal -u ${ARM_CLIENT_ID} -p ${ARM_CLIENT_SECRET} --tenant ${ARM_TENANT_ID}"
+                }
+            }
+        }        
         stage ('Deploy Terraform Plan ==> apply') {
             when { expression { params.action == 'create' } }
             steps {
