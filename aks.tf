@@ -1,5 +1,6 @@
 provider "azurerm" {
 features {}
+    use_cli = false
 }
 
 # Create a resource group if it doesn't exist
