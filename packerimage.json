@@ -1,0 +1,47 @@
+{
+  "builders": [{
+    "type": "azure-arm",
+	
+	"client_id": "d3938e77-bb5d-4643-a2f9-6d302a508b5c",
+    "client_secret": "H.3z2k1-Z5.V~DjKv.py56EyY__B2OzxsS",
+    "tenant_id": "7f4f6c58-a36b-43c1-a9a1-8ae8eddb0e29",
+    "subscription_id": "685859a3-9436-4c12-b6df-cf09df662a00",
+	
+    "managed_image_resource_group_name": "packer",
+    "managed_image_name": "mySBPImage",
+
+    "os_type": "Linux",
+    "image_publisher": "cognosys",
+    "image_offer": "centos-75-lts-free",
+    "image_sku": "centos-75-free",
+
+    "azure_tags": {
+        "task": "Single-branch-centos"
+    },
+	
+	"plan_info": {
+	   "plan_name": "centos-75-free",
+	   "plan_publisher": "cognosys",
+	   "plan_product": "centos-75-lts-free"
+	},
+
+    "location": "East US",
+    "vm_size": "Standard_DS2_v2"
+  }],
+  "provisioners": [
+        {
+            "type": "shell",
+            "inline": [
+                "sleep 60",
+                "sudo yum-config-manager --add-repo http://pkg.jenkins-ci.org/redhat-stable/jenkins.repo",
+                "sudo rpm --import https://pkg.jenkins.io/redhat/jenkins.io.key",
+				"sudo yum update -y",
+                "sudo yum install -y jenkins-2.263.4 wget",
+                "sudo wget https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm",
+                "sudo yum install epel-release-latest-7.noarch.rpm -y",
+                "sudo yum install ansible -y"
+            ]
+        }
+    ]
+}
+
