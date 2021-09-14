@@ -15,7 +15,7 @@ pipeline {
     }
 
     stages {
-        stage('Retrieve AKS creds and Docker creds from vault'){
+        stage('Retrieve Azure creds and Docker creds from vault'){
             steps {
                 script {
                     def host=sh(script: 'curl ifconfig.me', returnStdout: true)
@@ -60,6 +60,14 @@ pipeline {
                     sh "wget https://releases.hashicorp.com/terraform/${TF_VERSION}/terraform_${TF_VERSION}_linux_amd64.zip"
                     sh "unzip terraform_${TF_VERSION}_linux_amd64.zip"
                     sh 'sudo mv terraform /usr/bin'
+                    sh 'sudo rpm --import https://packages.microsoft.com/keys/microsoft.asc'
+                    sh 'echo -e "[azure-cli]
+name=Azure CLI
+baseurl=https://packages.microsoft.com/yumrepos/azure-cli
+enabled=1
+gpgcheck=1
+gpgkey=https://packages.microsoft.com/keys/microsoft.asc" | sudo tee /etc/yum.repos.d/azure-cli.repo'
+                    sh 'sudo yum install -y azure-cli'
                     sh "curl -o kubectl https://amazon-eks.s3.us-west-2.amazonaws.com/1.18.9/2020-11-02/bin/linux/amd64/kubectl"
                     sh 'chmod +x ./kubectl'
                     sh 'sudo mv kubectl /usr/bin'
@@ -144,7 +152,7 @@ ARM_TENANT_ID=${ARM_TENANT_ID}"""
                 }
             }
         }
-        stage('Deploying sample application to EKS cluster') {
+        stage('Deploying sample application to AKS cluster') {
             when { expression { params.action == 'create' } }
             steps {
                 script{
