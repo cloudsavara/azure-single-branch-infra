@@ -3,7 +3,7 @@ pipeline {
         choice(name: 'action', choices: 'create\ndestroy', description: 'Action to create AKS EKS cluster')
         string(name: 'cluster_name', defaultValue: 'demo', description: 'EKS cluster name')
         string(name: 'terraform_version', defaultValue: '0.14.6', description: 'Terraform version')
-        string(name: 'git_user', defaultValue: 'kodekolli', description: 'Enter github username')
+        string(name: 'git_user', defaultValue: 'cloudsavara', description: 'Enter github username')
     }
 
     agent any
