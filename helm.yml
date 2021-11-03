@@ -23,8 +23,7 @@
     - name: Add stable grafana chart repo
       community.kubernetes.helm_repository:
         name: grafana-stable-repo
-        repo_url: https://grafana.github.io/helm-charts         
-
+        repo_url: https://grafana.github.io/helm-charts
     - name: Deploy latest version of Prometheus chart inside monitoring namespace (and create it).
       community.kubernetes.helm:
         name: prometheus
@@ -35,7 +34,6 @@
         values:
           persistence:
             storageClassName: "gp2"
-
     - name: Deploy latest version of Grafana chart inside monitoring namespace with values
       community.kubernetes.helm:
         name: grafana
